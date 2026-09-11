@@ -1,0 +1,14 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-and-publish:
+    uses: innovmetric/shared-python-workflows/.github/workflows/publish-app-to-s3.yml@v2
+    with:
+      aws_access_key_id: ${{ vars.AWS_ACCESS_KEY_ID }}  # AWS_ACCESS_KEY_ID must be set in the repository variables
+      aws_endpoint_url: ${{ vars.AWS_ENDPOINT_URL }}    # AWS_ENDPOINT_URL must be set in the repository variables
+    secrets:
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

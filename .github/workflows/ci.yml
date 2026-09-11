@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    uses: innovmetric/shared-python-workflows/.github/workflows/run-tests.yml@v2
+
+  build-app:
+    needs:
+      - run-tests
+
+    uses: innovmetric/shared-python-workflows/.github/workflows/build-app.yml@v2

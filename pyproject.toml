@@ -1,0 +1,44 @@
+[project]
+name = "disk-io-parser"
+dynamic = ["version"]
+description = ""
+authors = [
+    {name = "jgionet",email = "jgionet@innovmetric.com"}
+]
+readme = "README.md"
+license = "LicenseRef-Proprietary"
+requires-python = ">=3.12"
+dependencies = [
+    "typer",
+]
+
+[dependency-groups]
+dev = [
+    "mypy",
+    "pytest",
+    "ruff",
+]
+
+build = [
+    "pyinstaller",
+    "dunamai",
+]
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning>=0.7.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+vcs = "git"
+style = "pep440"
+bump = true
+
+[[tool.uv.index]]
+name = "kurma"
+url = "http://kurma.innovmetric.com:3141/root/public/+simple/"
+
+[tool.ruff]
+line-length = 121
