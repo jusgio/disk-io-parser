@@ -10,6 +10,7 @@ license = "LicenseRef-Proprietary"
 requires-python = ">=3.12"
 dependencies = [
     "typer",
+    "pandas",
 ]
 
 [dependency-groups]
@@ -35,10 +36,6 @@ source = "uv-dynamic-versioning"
 vcs = "git"
 style = "pep440"
 bump = true
-
-[[tool.uv.index]]
-name = "kurma"
-url = "http://kurma.innovmetric.com:3141/root/public/+simple/"
 
 [tool.ruff]
 line-length = 121
