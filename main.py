@@ -51,7 +51,7 @@ def plot_disk_io(json_file: Path):
     # === Disk performance graph ===
     fig_perf, axes_perf = plt.subplots(2, 2, figsize=(18, 10), sharex=True)
     fig_perf.suptitle(
-        f"{physical_df['hostname'].iloc[0].upper()} Disk performance from iostat logs "
+        f"{physical_df['hostname'].iloc[0].upper()} disk performance from iostat logs "
         f"({start_time:%Y-%m-%d %H:%M} - {end_time:%Y-%m-%d %H:%M})",
         fontsize=16,
         fontweight="bold"
@@ -82,13 +82,13 @@ def plot_disk_io(json_file: Path):
     # === Disk throughput graph ===
     fig_thr, ax_thr = plt.subplots(figsize=(18, 10))
     ax_thr.set_title(
-        f"{physical_df['hostname'].iloc[0].upper()} Disk throughput from iostat logs "
+        f"{physical_df['hostname'].iloc[0].upper()} disk throughput from iostat logs "
         f"({start_time:%Y-%m-%d %H:%M} - {end_time:%Y-%m-%d %H:%M})",
         fontsize=16,
         fontweight="bold"
     )
-    ax_thr.plot(plot_df.index, plot_df["wkB/s"], label="Write Throughput")
-    ax_thr.plot(plot_df.index, plot_df["rkB/s"], label="Read Throughput")
+    ax_thr.plot(plot_df.index, plot_df["wkB/s"], label="Write throughput")
+    ax_thr.plot(plot_df.index, plot_df["rkB/s"], label="Read throughput")
     ax_thr.set_ylabel("kB/s")
     ax_thr.legend()
     ax_thr.grid(True, alpha=0.3)
