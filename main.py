@@ -35,33 +35,39 @@ def plot_disk_io(json_file: Path):
 
     physical_df = io_df[io_df["disk_device"].isin(["sda", "nvme0n1"])]
     physical_df = physical_df.set_index("timestamp")
+    start_time = physical_df.index.min()
+    end_time = physical_df.index.max()
 
+    # Seperate dataframe with 5-minute resampling to improve the readability of the graphs  
     plot_df = (physical_df.resample("5min").mean(numeric_only=True))
 
-    ## Disk I/O metrics summary
+    # === Disk I/O metrics summary ===
     summary = physical_df[
         ["util", "aqu-sz", "w_await", "r_await", "wkB/s", "rkB/s"]
     ].agg(["mean", "max"]).round(2)
-    print(f"{physical_df['hostname'].iloc[0].upper()} summary:")
+    print(f"{physical_df['hostname'].iloc[0].upper()} summary ({start_time:%Y-%m-%d %H:%M} - {end_time:%Y-%m-%d %H:%M}):")
     print(summary)
 
-    ## Disk Performance    
+    # === Disk performance graph ===
     fig_perf, axes_perf = plt.subplots(2, 2, figsize=(18, 10), sharex=True)
-    fig_perf.suptitle(f"{physical_df['hostname'].iloc[0].upper()} Disk Performance (from iostat)", fontsize=16, fontweight="bold")
-
-    axes_perf[0, 0].plot(physical_df.index, physical_df["util"])
+    fig_perf.suptitle(
+        f"{physical_df['hostname'].iloc[0].upper()} Disk performance from iostat logs "
+        f"({start_time:%Y-%m-%d %H:%M} - {end_time:%Y-%m-%d %H:%M})",
+        fontsize=16,
+        fontweight="bold"
+    )
+    axes_perf[0, 0].plot(plot_df.index, plot_df["util"])
     axes_perf[0, 0].set_title("Disk utilization")
     axes_perf[0, 0].set_ylabel("%")
-    axes_perf[0, 1].plot(physical_df.index, physical_df["aqu-sz"])
+    axes_perf[0, 1].plot(plot_df.index, plot_df["aqu-sz"])
     axes_perf[0, 1].set_title("Outstanding I/O requests")  
     axes_perf[0, 1].set_ylabel("Requests")
-    axes_perf[1, 0].plot(physical_df.index, physical_df["w_await"])
+    axes_perf[1, 0].plot(plot_df.index, plot_df["w_await"])
     axes_perf[1, 0].set_title("Write wait time")
     axes_perf[1, 0].set_ylabel("ms")
-    axes_perf[1, 1].plot(physical_df.index, physical_df["r_await"])
+    axes_perf[1, 1].plot(plot_df.index, plot_df["r_await"])
     axes_perf[1, 1].set_title("Read wait time")
     axes_perf[1, 1].set_ylabel("ms")
-
     # Format dates correctly in x-axis
     for ax in axes_perf.flatten():
         ax.xaxis.set_major_locator(
@@ -73,12 +79,16 @@ def plot_disk_io(json_file: Path):
         ax.grid(True, alpha=0.3)
     fig_perf.autofmt_xdate()
 
-    ## Disk Throughput
+    # === Disk throughput graph ===
     fig_thr, ax_thr = plt.subplots(figsize=(18, 10))
-
-    ax_thr.plot(physical_df.index, physical_df["wkB/s"], label="Write Throughput")
-    ax_thr.plot(physical_df.index, physical_df["rkB/s"], label="Read Throughput")
-    ax_thr.set_title(f"{physical_df['hostname'].iloc[0].upper()} Disk Throughput (from iostat)", fontsize=16, fontweight="bold")
+    ax_thr.set_title(
+        f"{physical_df['hostname'].iloc[0].upper()} Disk throughput from iostat logs "
+        f"({start_time:%Y-%m-%d %H:%M} - {end_time:%Y-%m-%d %H:%M})",
+        fontsize=16,
+        fontweight="bold"
+    )
+    ax_thr.plot(plot_df.index, plot_df["wkB/s"], label="Write Throughput")
+    ax_thr.plot(plot_df.index, plot_df["rkB/s"], label="Read Throughput")
     ax_thr.set_ylabel("kB/s")
     ax_thr.legend()
     ax_thr.grid(True, alpha=0.3)
